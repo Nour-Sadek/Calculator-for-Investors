@@ -1,5 +1,6 @@
 # Imported packages
 import csv
+import sqlite3
 from sqlalchemy import Column, Float, String
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import create_engine
@@ -32,8 +33,11 @@ class Financial(Base):
     liabilities = Column(Float)
 
 
-# Connect to SQLAlchemy with SQLite dialect
-engine = create_engine('sqlite://investor.db', echo=True)
+# Create the sqlite database
+sqlite3.connect('investor.db')
+
+# Connect to SQLAlchemy with SQLite dialect and <investor.db> database
+engine = create_engine('sqlite:///investor.db', echo=True)
 
 # Save the created tables companies and financial
 Base.metadata.create_all(engine)
