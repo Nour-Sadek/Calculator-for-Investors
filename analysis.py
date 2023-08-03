@@ -1,3 +1,44 @@
+# Imported packages
+import csv
+from sqlalchemy import Column, Float, String
+from sqlalchemy.orm import declarative_base
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+
+
+Base = declarative_base()
+
+
+class Companies(Base):
+    __tablename__ = 'companies'
+
+    ticker = Column(String, primary_key=True)
+    name = Column(String(30))
+    sector = Column(String)
+
+
+class Financial(Base):
+    __tablename__ = 'financial'
+
+    ticker = Column(String, primary_key=True)
+    ebitda = Column(Float)
+    sales = Column(Float)
+    net_profit = Column(Float)
+    market_price = Column(Float)
+    net_debt = Column(Float)
+    assets = Column(Float)
+    equity = Column(Float)
+    cash_equivalents = Column(Float)
+    liabilities = Column(Float)
+
+
+# Connect to SQLAlchemy with SQLite dialect
+engine = create_engine('sqlite://investor.db', echo=True)
+
+# Save the created tables companies and financial
+Base.metadata.create_all(engine)
+
+
 def main_menu():
     while True:
         print("""
@@ -104,4 +145,21 @@ def list_by_roa():
 
 
 if __name__ == '__main__':
+    # Read the data from the financial.csv file
+    with open('data/financial.csv', 'r') as financials:
+        financials_reader = csv.DictReader(financials, delimiter=',')
+        for row in financials_reader:
+            for key in row:
+                if row[key] == '':
+                    row[key] = None
+
+    # Read the data from the companies.csv file
+    with open('data/companies.csv', 'r') as companies:
+        companies_reader = csv.DictReader(companies, delimiter=',')
+        for row in companies_reader:
+            for key in row:
+                if row[key] == '':
+                    row[key] = None
+
+    # Start the program
     main_menu()
