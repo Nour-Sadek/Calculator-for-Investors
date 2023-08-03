@@ -107,7 +107,7 @@ TOP TEN MENU
         if user_input == '1':
             list_by_nd()
         elif user_input == '2':
-            list_by_roa()
+            list_by_roe()
         elif user_input == '3':
             list_by_roa()
         else:  # user asked to go back
@@ -148,22 +148,48 @@ def list_by_roa():
     print('Not implemented!\n')
 
 
+# Read the data from the financial.csv file
+with open('data/financial.csv', 'r') as financials:
+    financials_reader = csv.DictReader(financials, delimiter=',')
+    financial_objects = []
+    for row in financials_reader:
+        for key in row:
+            if row[key] == '':
+                row[key] = None
+        financial_objects.append(Financial(**row))
+
+    # Insert data from <financial_reader> to financial table in <investor.db>
+    # Create a session to modify database
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    # Add the data
+    if session.query(Financial).first() is None:  # Checks if table is empty
+        for row in financial_objects:
+            session.add(row)
+    session.commit()
+    session.close()
+
+# Read the data from the companies.csv file
+with open('data/companies.csv', 'r') as companies:
+    companies_reader = csv.DictReader(companies, delimiter=',')
+    companies_objects = []
+    for row in companies_reader:
+        for key in row:
+            if row[key] == '':
+                row[key] = None
+        companies_objects.append(Companies(**row))
+
+    # Insert data from <companies_reader> to companies table in <investor.db>
+    # Create a session to modify database
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    # Add the data
+    if session.query(Companies).first() is None:  # Checks if table is empty
+        for row in companies_objects:
+            session.add(row)
+    session.commit()
+    session.close()
+
 if __name__ == '__main__':
-    # Read the data from the financial.csv file
-    with open('data/financial.csv', 'r') as financials:
-        financials_reader = csv.DictReader(financials, delimiter=',')
-        for row in financials_reader:
-            for key in row:
-                if row[key] == '':
-                    row[key] = None
-
-    # Read the data from the companies.csv file
-    with open('data/companies.csv', 'r') as companies:
-        companies_reader = csv.DictReader(companies, delimiter=',')
-        for row in companies_reader:
-            for key in row:
-                if row[key] == '':
-                    row[key] = None
-
     # Start the program
     main_menu()
