@@ -165,11 +165,26 @@ def create_company():
 
 # create_company helper functions (2)
 def read_ticker() -> str:
-    pass
+    while True:
+        print("Enter ticker (in the format 'MOON'):")
+        ticker = input()
+        if ticker.isalpha() and ticker.isupper():
+            break
+        else:
+            print('Wrong format! Please provide ticker in the right format.')
+    return ticker
 
 
 def read_number(identity: str) -> float:
-    pass
+    while True:
+        statement = f"Enter {identity} (in the format '987654321'):"
+        print(statement)
+        value = input()
+        try:
+            value = float(value)
+            return value
+        except ValueError:
+            print("Wrong input! Please provide a valid number.")
 
 
 def read_company():
