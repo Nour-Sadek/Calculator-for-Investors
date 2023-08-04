@@ -132,9 +132,44 @@ TOP TEN MENU
         else:  # user asked to go back
             pass
 
+
 # CRUD MENU actions
 def create_company():
-    print('Not implemented!\n')
+    # Read in the required information for the company
+    ticker = read_ticker()
+    print("Enter company (in the format 'Moon Corp'):")
+    company_name = input()
+    print("Enter industries (in the format 'Technology'):")
+    sector = input()
+    ebitda = read_number("ebitda")
+    sales = read_number("sales")
+    net_profit = read_number("net profit")
+    market_price = read_number("market price")
+    net_debt = read_number("net debt")
+    assets = read_number("assets")
+    equity = read_number("equity")
+    cash_equivalents = read_number("cash equivalents")
+    liabilities = read_number("liabilities")
+
+    # Insert the company into the database
+    companies_values = (ticker, company_name, sector)
+    financial_values = (ticker, ebitda, sales, net_profit, market_price,
+                        net_debt, assets, equity, cash_equivalents, liabilities)
+    c.execute("INSERT INTO companies VALUES (?, ?, ?)", companies_values)
+    c.execute("INSERT INTO financial VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+              financial_values)
+    conn.commit()
+
+    print("Company created successfully!")
+
+
+# create_company helper functions (2)
+def read_ticker() -> str:
+    pass
+
+
+def read_number(identity: str) -> float:
+    pass
 
 
 def read_company():
