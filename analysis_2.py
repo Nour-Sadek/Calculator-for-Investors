@@ -1,5 +1,6 @@
 import sqlite3
 import csv
+import optional
 
 conn = sqlite3.connect('investor.db')
 
@@ -204,11 +205,26 @@ def read_company():
                 break
 
 
-def acquire_companies():
-    pass
+# Helper function for read_company()
+def acquire_companies() -> list:
+    print("Enter company name:")
+    company_name = input()
+    command = f"SELECT ticker, name FROM companies WHERE name LIKE '%{company_name}%'"
+    c.execute(command)
+    rows = c.fetchall()
+    if not rows:
+        print("Company not found!")
+        return []
+    else:
+        i = 0
+        for company in rows:
+            print(f"{i} {company[1]}")
+            i = i + 1
+        return rows
 
 
-def company_info():
+# Helper function for read_company()
+def company_info(ticker: str) -> None:
     pass
 
 
