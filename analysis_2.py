@@ -1,6 +1,6 @@
 import sqlite3
 import csv
-import optional
+from typing import Union
 
 conn = sqlite3.connect('investor.db')
 
@@ -194,7 +194,7 @@ def read_company():
         while True:
             print("Enter company number:")
             user_input = input()
-            if user_input not in [str(num) for num in range(i)]:
+            if user_input not in [str(num) for num in range(len(rows))]:
                 print(
                     'Wrong input! Please input an available company number.')
             else:
@@ -251,8 +251,12 @@ def company_info(ticker: str) -> None:
 
 
 # Helper function for company_info()
-def calculate_formula(num1: float, num2: float) -> optional[float]:
-    pass
+def calculate_formula(num1: float, num2: float) -> Union[float, None]:
+    try:
+        value = round(num1 / num2, 2)
+    except TypeError:
+        value = None
+    return value
 
 
 def update_company():
@@ -278,3 +282,8 @@ def list_by_roe():
 
 def list_by_roa():
     print('Not implemented!\n')
+
+
+if __name__ == '__main__':
+    print("Welcome to the Investor Program!")
+    main_menu()
