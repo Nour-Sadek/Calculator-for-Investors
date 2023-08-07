@@ -225,6 +225,33 @@ def acquire_companies() -> list:
 
 # Helper function for read_company()
 def company_info(ticker: str) -> None:
+    statement = f"SELECT * FROM financial WHERE ticker = '{ticker}'"
+    c.execute(statement)
+    values = c.fetchone()
+
+    # get required values
+    ebitda = values[1]
+    sales = values[2]
+    net_profit = values[3]
+    market_price = values[4]
+    net_debt = values[5]
+    assets = values[6]
+    equity = values[7]
+    liabilities = values[9]
+
+    # Calculating the required info
+
+    print(f"P/E = {calculate_formula(market_price, net_profit)}")
+    print(f"P/S = {calculate_formula(market_price, sales)}")
+    print(f"P/B = {calculate_formula(market_price, assets)}")
+    print(f"ND/EBITDA = {calculate_formula(net_debt, ebitda)}")
+    print(f"ROE = {calculate_formula(net_profit, equity)}")
+    print(f"ROA = {calculate_formula(net_profit, assets)}")
+    print(f"L/A = {calculate_formula(liabilities, assets)}")
+
+
+# Helper function for company_info()
+def calculate_formula(num1: float, num2: float) -> optional[float]:
     pass
 
 
