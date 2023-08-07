@@ -188,7 +188,28 @@ def read_number(identity: str) -> float:
 
 
 def read_company():
-    print('Not implemented!\n')
+    rows = acquire_companies()
+    if rows:
+        while True:
+            print("Enter company number:")
+            user_input = input()
+            if user_input not in [str(num) for num in range(i)]:
+                print(
+                    'Wrong input! Please input an available company number.')
+            else:
+                ticker = rows[int(user_input)][0]
+                name = rows[int(user_input)][1]
+                print(f"{ticker} {name}")
+                company_info(ticker)
+                break
+
+
+def acquire_companies():
+    pass
+
+
+def company_info():
+    pass
 
 
 def update_company():
