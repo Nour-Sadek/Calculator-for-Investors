@@ -260,7 +260,24 @@ def calculate_formula(num1: float, num2: float) -> Union[float, None]:
 
 
 def update_company():
-    print('Not implemented!\n')
+    rows = acquire_companies()
+    if rows:
+        while True:
+            print("Enter company number:")
+            user_input = input()
+            if user_input not in [str(num) for num in range(len(rows))]:
+                print(
+                    'Wrong input! Please input an available company number.')
+            else:
+                ticker = rows[int(user_input)][0]
+                get_and_set_values(ticker)
+                print("Company updated successfully!")
+                break
+
+
+# Helper function for update_company()
+def get_and_set_values(ticker: str) -> None:
+    pass
 
 
 def delete_company():
