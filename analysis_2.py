@@ -298,7 +298,23 @@ def get_and_set_values(ticker: str) -> None:
 
 
 def delete_company():
-    print('Not implemented!\n')
+    rows = acquire_companies()
+    if rows:
+        while True:
+            print("Enter company number:")
+            user_input = input()
+            if user_input not in [str(num) for num in range(len(rows))]:
+                print(
+                    'Wrong input! Please input an available company number.')
+            else:
+                ticker = rows[int(user_input)][0]
+                command = f"DELETE FROM companies WHERE ticker = '{ticker}'"
+                c.execute(command)
+                command = f"DELETE FROM financial WHERE ticker = '{ticker}'"
+                c.execute(command)
+                conn.commit()
+                print("Company deleted successfully!")
+                break
 
 
 def list_companies():
