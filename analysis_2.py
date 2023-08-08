@@ -318,7 +318,15 @@ def delete_company():
 
 
 def list_companies():
-    print('Not implemented!\n')
+    print("COMPANY LIST")
+    c.execute("SELECT * FROM companies ORDER BY ticker ASC")
+    all_companies = c.fetchall()
+    for company in all_companies:
+        ticker = company[0]
+        name = company[1]
+        sector = company[2]
+        print(ticker, name, sector)
+    print()
 
 
 # TOP TEN MENU actions
