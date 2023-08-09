@@ -334,7 +334,12 @@ def list_top_ten(type_to_list: str, table: str) -> None:
 
 
 def create_table(type_to_list: str, table: str) -> None:
-    pass
+    # Create a temporary table to store <type_to_list> values
+    command = f"""CREATE TEMPORARY TABLE IF NOT EXISTS {table} (
+        ticker TEXT NOT NULL PRIMARY KEY,
+        {type_to_list} REAL)"""
+    c.execute(command)
+    conn.commit()
 
 
 # TOP TEN MENU actions
