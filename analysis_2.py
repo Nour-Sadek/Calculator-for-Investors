@@ -60,6 +60,7 @@ if c.fetchone() is None:
                 values_of_row)
             conn.commit()
 
+
 def main_menu():
     while True:
         print("""
@@ -330,7 +331,19 @@ def list_companies():
 
 
 def list_top_ten(type_to_list: str, table: str) -> None:
-    pass
+    # Fetch the top ten
+    command = f"SELECT * FROM {table} ORDER BY {type_to_list} DESC LIMIT 10"
+    c.execute(command)
+    top_ten = c.fetchall()
+
+    # Display the top ten
+    if type_to_list == 'nd_ebitda':
+        display_txt = "TICKER ND/EBITDA"
+    else:
+        display_txt = 'TICKER ' + type_to_list.upper()
+    print(display_txt)
+    for company in top_ten:
+        print(company[0], company[1])
 
 
 def create_table(type_to_list: str, table: str) -> None:
