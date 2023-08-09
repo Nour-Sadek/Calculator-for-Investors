@@ -329,9 +329,36 @@ def list_companies():
     print()
 
 
+def list_top_ten(type_to_list: str, table: str) -> None:
+    pass
+
+
+def create_table(type_to_list: str, table: str) -> None:
+    pass
+
+
 # TOP TEN MENU actions
-def list_by_nd():
-    print('Not implemented!\n')
+def list_by_nd() -> None:
+    type_to_list = 'nd_ebitda'
+    table = 'companies_' + type_to_list
+
+    # IF NOT EXISTS, create the table and populate it
+    create_table(type_to_list, table)
+
+    # Fill out the table if it is empty
+    command = f"SELECT * FROM {table}"
+    c.execute(command)
+    if c.fetchone() is None:
+        c.execute('SELECT ticker, net_debt, ebitda FROM financial')
+        all_companies = c.fetchall()
+        for company in all_companies:
+            nd_ebitda = calculate_formula(company[1], company[2])
+            c.execute("INSERT INTO companies_nd_ebitda VALUES (?, ?)",
+                      (company[0], nd_ebitda))
+        conn.commit()
+
+    # Print out the top ten
+    list_top_ten(type_to_list, table)
 
 
 def list_by_roe():
