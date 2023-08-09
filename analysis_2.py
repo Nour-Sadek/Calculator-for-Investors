@@ -345,6 +345,11 @@ def list_top_ten(type_to_list: str, table: str) -> None:
     for company in top_ten:
         print(company[0], company[1])
 
+    # Delete the table
+    command = f"DROP TABLE {table}"
+    c.execute(command)
+    conn.commit()
+
 
 def create_table(type_to_list: str, table: str) -> None:
     # Create a temporary table to store <type_to_list> values
@@ -360,20 +365,17 @@ def list_by_nd() -> None:
     type_to_list = 'nd_ebitda'
     table = 'companies_' + type_to_list
 
-    # IF NOT EXISTS, create the table and populate it
+    # Create the table and populate it
     create_table(type_to_list, table)
 
-    # Fill out the table if it is empty
-    command = f"SELECT * FROM {table}"
-    c.execute(command)
-    if c.fetchone() is None:
-        c.execute('SELECT ticker, net_debt, ebitda FROM financial')
-        all_companies = c.fetchall()
-        for company in all_companies:
-            nd_ebitda = calculate_formula(company[1], company[2])
-            c.execute("INSERT INTO companies_nd_ebitda VALUES (?, ?)",
-                      (company[0], nd_ebitda))
-        conn.commit()
+    # Fill out the table
+    c.execute('SELECT ticker, net_debt, ebitda FROM financial')
+    all_companies = c.fetchall()
+    for company in all_companies:
+        nd_ebitda = calculate_formula(company[1], company[2])
+        c.execute("INSERT INTO companies_nd_ebitda VALUES (?, ?)",
+                  (company[0], nd_ebitda))
+    conn.commit()
 
     # Print out the top ten
     list_top_ten(type_to_list, table)
@@ -383,20 +385,17 @@ def list_by_roe():
     type_to_list = 'roe'
     table = 'companies_' + type_to_list
 
-    # IF NOT EXISTS, create the table and populate it
+    # Create the table and populate it
     create_table(type_to_list, table)
 
-    # Fill out the table if it is empty
-    command = f"SELECT * FROM {table}"
-    c.execute(command)
-    if c.fetchone() is None:
-        c.execute('SELECT ticker, net_profit, equity FROM financial')
-        all_companies = c.fetchall()
-        for company in all_companies:
-            roe = calculate_formula(company[1], company[2])
-            c.execute("INSERT INTO companies_roe VALUES (?, ?)",
-                      (company[0], roe))
-        conn.commit()
+    # Fill out the table
+    c.execute('SELECT ticker, net_profit, equity FROM financial')
+    all_companies = c.fetchall()
+    for company in all_companies:
+        roe = calculate_formula(company[1], company[2])
+        c.execute("INSERT INTO companies_roe VALUES (?, ?)",
+                  (company[0], roe))
+    conn.commit()
 
     # Print out the top ten
     list_top_ten(type_to_list, table)
@@ -406,20 +405,17 @@ def list_by_roa():
     type_to_list = 'roa'
     table = 'companies_' + type_to_list
 
-    # IF NOT EXISTS, create the table and populate it
+    # Create the table and populate it
     create_table(type_to_list, table)
 
-    # Fill out the table if it is empty
-    command = f"SELECT * FROM {table}"
-    c.execute(command)
-    if c.fetchone() is None:
-        c.execute('SELECT ticker, net_profit, assets FROM financial')
-        all_companies = c.fetchall()
-        for company in all_companies:
-            roa = calculate_formula(company[1], company[2])
-            c.execute("INSERT INTO companies_roa VALUES (?, ?)",
-                      (company[0], roa))
-        conn.commit()
+    # Fill out the table
+    c.execute('SELECT ticker, net_profit, assets FROM financial')
+    all_companies = c.fetchall()
+    for company in all_companies:
+        roa = calculate_formula(company[1], company[2])
+        c.execute("INSERT INTO companies_roa VALUES (?, ?)",
+                  (company[0], roa))
+    conn.commit()
 
     # Print out the top ten
     list_top_ten(type_to_list, table)
