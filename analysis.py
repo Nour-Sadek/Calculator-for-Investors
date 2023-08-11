@@ -183,7 +183,20 @@ def read_number(identity: str) -> float:
 
 
 def read_company():
-    print('Not implemented!\n')
+    companies_objects = acquire_companies()
+    if companies_objects:
+        while True:
+            print("Enter company number:")
+            user_input = input()
+            if user_input not in [str(num) for num in range(companies_objects.count())]:
+                print(
+                    'Wrong input! Please input an available company number.')
+            else:
+                ticker = companies_objects[int(user_input)].ticker
+                name = companies_objects[int(user_input)].name
+                print(f"{ticker} {name}")
+                company_info(ticker)
+                break
 
 
 # Helper function for read_company()
@@ -201,6 +214,40 @@ def acquire_companies():
             print(f"{i} {company.name}")
             i = i + 1
         return companies_objects
+
+
+# Helper function for read_company()
+def company_info(ticker: str) -> None:
+    financial_query = query_financial.filter(Financial.ticker == ticker)
+    values = financial_query[0]  # A Financial object
+
+    # get required values
+    ebitda = values.ebitda
+    sales = values.sales
+    net_profit = values.net_profit
+    market_price = values.market_price
+    net_debt = values.net_debt
+    assets = values.assets
+    equity = values.equity
+    liabilities = values.liabilities
+
+    # Calculating the required info
+    print(f"P/E = {calculate_formula(market_price, net_profit)}")
+    print(f"P/S = {calculate_formula(market_price, sales)}")
+    print(f"P/B = {calculate_formula(market_price, assets)}")
+    print(f"ND/EBITDA = {calculate_formula(net_debt, ebitda)}")
+    print(f"ROE = {calculate_formula(net_profit, equity)}")
+    print(f"ROA = {calculate_formula(net_profit, assets)}")
+    print(f"L/A = {calculate_formula(liabilities, assets)}")
+
+
+# Helper function for company_info()
+def calculate_formula(num1: float, num2: float):
+    try:
+        value = round(num1 / num2, 2)
+    except TypeError:
+        value = None
+    return value
 
 
 def update_company():
