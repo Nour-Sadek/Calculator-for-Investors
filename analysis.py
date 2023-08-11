@@ -251,7 +251,39 @@ def calculate_formula(num1: float, num2: float):
 
 
 def update_company():
-    print('Not implemented!\n')
+    companies_objects = acquire_companies()
+    if companies_objects:
+        while True:
+            print("Enter company number:")
+            user_input = input()
+            if user_input not in [str(num) for num in
+                                  range(companies_objects.count())]:
+                print(
+                    'Wrong input! Please input an available company number.')
+            else:
+                ticker = companies_objects[int(user_input)].ticker
+                get_and_set_values(ticker)
+                print("Company updated successfully!")
+                break
+
+
+# Helper function for update_company()
+def get_and_set_values(ticker: str) -> None:
+    # Get values from the user
+    financial_dict = {'ebitda': read_number("ebitda"),
+                      'sales': read_number("sales"),
+                      'net_profit': read_number("net profit"),
+                      'market_price': read_number("market price"),
+                      'net_debt': read_number("net debt"),
+                      'assets': read_number("assets"),
+                      'equity': read_number("equity"),
+                      'cash_equivalents': read_number("cash equivalents"),
+                      'liabilities': read_number("liabilities")}
+
+    # Update the database with the new values
+    company_filter = query_financial.filter(Financial.ticker == ticker)
+    company_filter.update(financial_dict)
+    session.commit()
 
 
 def delete_company():
