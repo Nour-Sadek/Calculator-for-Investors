@@ -1,6 +1,8 @@
 # Imported packages
 import csv
 import sqlite3
+from typing import Any
+
 from sqlalchemy import Column, Float, String
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import create_engine
@@ -41,6 +43,14 @@ engine = create_engine('sqlite:///investor.db', echo=True)
 
 # Save the created tables companies and financial
 Base.metadata.create_all(engine)
+
+# Create a Session class
+Session = sessionmaker(bind=engine)
+session = Session()
+
+# Creating a query object for each table
+query_companies = session.query(Companies)
+query_financial = session.query(Financial)
 
 
 def main_menu():
@@ -174,6 +184,23 @@ def read_number(identity: str) -> float:
 
 def read_company():
     print('Not implemented!\n')
+
+
+# Helper function for read_company()
+def acquire_companies():
+    print("Enter company name:")
+    company_name = input()
+    companies_objects = query_companies.filter(
+        Companies.name.like("%{}%".format(company_name)))
+    if companies_objects.first() is None:
+        print("Company not found!")
+        return []
+    else:
+        i = 0
+        for company in companies_objects:
+            print(f"{i} {company.name}")
+            i = i + 1
+        return companies_objects
 
 
 def update_company():
