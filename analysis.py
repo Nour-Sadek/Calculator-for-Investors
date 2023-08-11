@@ -53,10 +53,10 @@ MAIN MENU
 
         user_input = input("Enter an option:")
         if user_input not in ['0', '1', '2']:
-            print("Invalid option!\n")
+            print("Invalid option!")
         else:
             if user_input == '0':
-                print('Have a nice day!\n')
+                print('Have a nice day!')
                 break
             elif user_input == '1':
                 crud_menu()
@@ -76,7 +76,7 @@ CRUD MENU
 
     user_input = input("Enter an option:")
     if user_input not in ['0', '1', '2', '3', '4', '5']:
-        print("Invalid option!\n")
+        print("Invalid option!")
     else:
         if user_input == '1':
             create_company()
@@ -102,7 +102,7 @@ TOP TEN MENU
 
     user_input = input("Enter an option:")
     if user_input not in ['0', '1', '2', '3']:
-        print("Invalid option!\n")
+        print("Invalid option!")
     else:
         if user_input == '1':
             list_by_nd()
@@ -116,7 +116,60 @@ TOP TEN MENU
 
 # CRUD MENU actions
 def create_company():
-    print('Not implemented!\n')
+    companies_dict = {}
+    financial_dict = {}
+    # Read in the required information for the company
+    ticker = read_ticker()
+    companies_dict['ticker'] = ticker
+    financial_dict['ticker'] = ticker
+    print("Enter company (in the format 'Moon Corp'):")
+    companies_dict['name'] = input()
+    print("Enter industries (in the format 'Technology'):")
+    companies_dict['sector'] = input()
+    financial_dict['ebitda'] = read_number("ebitda")
+    financial_dict['sales'] = read_number("sales")
+    financial_dict['net_profit'] = read_number("net profit")
+    financial_dict['market_price'] = read_number("market price")
+    financial_dict['net_debt'] = read_number("net debt")
+    financial_dict['assets'] = read_number("assets")
+    financial_dict['equity'] = read_number("equity")
+    financial_dict['cash_equivalents'] = read_number("cash equivalents")
+    financial_dict['liabilities'] = read_number("liabilities")
+
+    # Create Companies and Financial objects
+    companies_object = Companies(**companies_dict)
+    financial_object = Financial(**financial_dict)
+
+    # Add the objects to the database
+    session.add(companies_object)
+    session.add(financial_object)
+    session.commit()
+
+    print("Company created successfully!")
+
+
+# create_company helper functions (2)
+def read_ticker() -> str:
+    while True:
+        print("Enter ticker (in the format 'MOON'):")
+        ticker = input()
+        if ticker.isalpha() and ticker.isupper():
+            break
+        else:
+            print('Wrong format! Please provide ticker in the right format.')
+    return ticker
+
+
+def read_number(identity: str) -> float:
+    while True:
+        statement = f"Enter {identity} (in the format '987654321'):"
+        print(statement)
+        value = input()
+        try:
+            value = float(value)
+            return value
+        except ValueError:
+            print("Wrong input! Please provide a valid number.")
 
 
 def read_company():
