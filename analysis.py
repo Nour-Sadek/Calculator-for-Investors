@@ -306,7 +306,14 @@ def delete_company():
 
 
 def list_companies():
-    print('Not implemented!\n')
+    print("COMPANY LIST")
+    all_companies = query_companies.order_by(Companies.ticker).all()
+    for company in all_companies:
+        ticker = company.ticker
+        name = company.name
+        sector = company.sector
+        print(ticker, name, sector)
+    print()
 
 
 # TOP TEN MENU actions
