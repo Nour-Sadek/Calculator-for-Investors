@@ -1,13 +1,15 @@
 # Imported packages
 import csv
 import sqlite3
-from typing import Any
+import logging
 
 from sqlalchemy import Column, Float, String
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+# To turn off sqlalchemy logger
+logging.disable(logging.INFO)
 
 Base = declarative_base()
 
@@ -316,17 +318,49 @@ def list_companies():
     print()
 
 
+# Helper function for TOP TEN MENU functions
+def list_top_ten(companies) -> None:
+    companies_dict = {}
+
+    for company in companies:
+        ticker = company[0]
+        evaluated_metric = calculate_formula(company[1], company[2])
+        # Don't include the companies that give a None value
+        if evaluated_metric is not None:
+            companies_dict[ticker] = evaluated_metric
+
+    top_ten = sorted(companies_dict.items(), key=lambda x: x[1], reverse=True)[:10]
+
+    for company in top_ten:
+        print(company[0], company[1])
+
+
 # TOP TEN MENU actions
 def list_by_nd():
-    print('Not implemented!\n')
+    all_companies = session.query(Financial.ticker, Financial.net_debt,
+                                  Financial.ebitda)
+
+    # Display the top ten
+    print("TICKER ND/EBITDA")
+    list_top_ten(all_companies)
 
 
 def list_by_roe():
-    print('Not implemented!\n')
+    all_companies = session.query(Financial.ticker, Financial.net_profit,
+                                  Financial.equity)
+
+    # Display the top ten
+    print("TICKER ROE")
+    list_top_ten(all_companies)
 
 
 def list_by_roa():
-    print('Not implemented!\n')
+    all_companies = session.query(Financial.ticker, Financial.net_profit,
+                                  Financial.assets)
+
+    # Display the top ten
+    print("TICKER ROA")
+    list_top_ten(all_companies)
 
 
 # Read the data from the financial.csv file
