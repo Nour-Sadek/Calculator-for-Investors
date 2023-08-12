@@ -287,7 +287,22 @@ def get_and_set_values(ticker: str) -> None:
 
 
 def delete_company():
-    print('Not implemented!\n')
+    companies_objects = acquire_companies()
+    if companies_objects:
+        while True:
+            print("Enter company number:")
+            user_input = input()
+            if user_input not in [str(num) for num in
+                                  range(companies_objects.count())]:
+                print(
+                    'Wrong input! Please input an available company number.')
+            else:
+                ticker = companies_objects[int(user_input)].ticker
+                query_financial.filter(Financial.ticker == ticker).delete()
+                query_companies.filter(Companies.ticker == ticker).delete()
+                session.commit()
+                print("Company deleted successfully!")
+                break
 
 
 def list_companies():
@@ -350,5 +365,6 @@ with open('data/companies.csv', 'r') as companies:
     session.close()
 
 if __name__ == '__main__':
+    print("Welcome to the Investor Program!")
     # Start the program
     main_menu()
